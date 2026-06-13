@@ -31,7 +31,8 @@ def post_capa_to_slack(capa: dict, finding: dict) -> None:
 
     client = Composio(api_key=os.environ.get("COMPOSIO_API_KEY"))
     client.tools.execute(
-        tool_slug="SLACK_SENDS_A_MESSAGE_AS_THE_APP",
-        arguments={"channel": "general", "text": text},
+        tool_slug="SLACK_CHAT_POST_MESSAGE",
+        arguments={"channel": os.environ.get("SLACK_CHANNEL", "general"), "markdown_text": text},
         connected_account_id=os.environ.get("COMPOSIO_SLACK_CONNECTION_ID"),
+        entity_id=os.environ.get("COMPOSIO_ENTITY_ID", "default"),
     )

@@ -112,13 +112,15 @@ Return a JSON object with exactly these fields:
             "drafted_at": c["drafted_at"].isoformat() if c["drafted_at"] else None,
         }
 
-        # Step 5: Slack notification (non-blocking)
+        # Step 5: Slack notification (non-blocking — failure included in response, not raised)
+        slack_warning = None
         try:
             post_capa_to_slack(capa, finding)
         except Exception as slack_err:
+            slack_warning = str(slack_err)
             logger.warning("Slack notification failed: %s", slack_err)
 
-        return {"message": "CAPA drafted and submitted for QA approval", "capa": capa}
+        return {"message": "CAPA drafted and submitted for QA approval", "capa": capa, "slack_warning": slack_warning}
     except HTTPException:
         raise
     except Exception as e:
